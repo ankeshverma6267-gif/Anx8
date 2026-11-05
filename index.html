@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Birthday Surprise ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #110519; color: #ffffff;
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            overflow-x: hidden;
+        }
+        .app-container {
+            width: 100%; max-width: 412px; height: 100vh; max-height: 870px;
+            background: radial-gradient(circle at top, #2e083a 0%, #110519 100%);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        .particle {
+            position: absolute; background: rgba(255, 182, 193, 0.3);
+            border-radius: 50%; pointer-events: none;
+            animation: floatUp 6s linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 30px 20px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: scale(0.95); z-index: 2;
+        }
+        .screen.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+        .btn-action {
+            background: linear-gradient(90deg, #ff5e62, #ff9966);
+            border: none; color: #fff; padding: 12px 35px; border-radius: 30px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 94, 98, 0.4); margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .btn-action:active { transform: scale(0.95); }
+        .sub-text { font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); margin-top: 8px; }
+        .gift-icon {
+            font-size: 80px; margin: 20px 0; cursor: pointer;
+            animation: pulseGift 1.8s infinite alternate;
+        }
+        @keyframes pulseGift {
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,105,180,0.5)); }
+            100% { transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(255,105,180,0.9)); }
+        }
+        .big-heart {
+            width: 130px; height: 130px;
+            background: radial-gradient(circle at 30% 30%, #ff758c, #ff7eb3);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 60px; box-shadow: 0 0 40px rgba(255, 117, 140, 0.6);
+            cursor: pointer; margin: 30px 0; transition: transform 0.3s;
+        }
+        .big-heart:active { transform: scale(1.3); }
+        .pink-banner {
+            width: 100%; background: linear-gradient(135deg, #e91e63, #c2185b);
+            padding: 40px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(233, 30, 99, 0.4);
+        }
+        
+        /* Tulip Flower Styling */
+        .tulip-wrapper {
+            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: bloom 2s ease-out infinite alternate;
+        }
+        .tulip-flower {
+            font-size: 110px;
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.7));
+        }
+        @keyframes bloom {
+            0% { transform: scale(0.95) rotate(-3deg); filter: drop-shadow(0 0 15px rgba(255, 105, 180, 0.5)); }
+            100% { transform: scale(1.08) rotate(3deg); filter: drop-shadow(0 0 30px rgba(255, 182, 193, 0.9)); }
+        }
+
+        .cake-wrapper { position: relative; width: 180px; height: 160px; margin: 20px 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        .cake-layer { width: 160px; height: 40px; background: #ff80ab; border-radius: 10px 10px 5px 5px; border-bottom: 4px solid #f50057; position: relative; }
+        .cake-layer.middle { width: 120px; height: 35px; background: #ff4081; border-bottom: 4px solid #c2185b; }
+        .cake-layer.top { width: 80px; height: 30px; background: #f8bbd0; }
+        .candle { width: 10px; height: 25px; background: #ffd700; border-radius: 3px; position: relative; }
+        .flame { width: 12px; height: 16px; background: #ff9800; border-radius: 50% 50% 20% 20%; position: absolute; top: -16px; left: -1px; box-shadow: 0 0 10px #ff9800; animation: flicker 0.2s infinite alternate; }
+        @keyframes flicker { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+        
+        .balloons-flex { display: flex; gap: 10px; margin-bottom: 15px; }
+        .pop-balloon { width: 45px; height: 60px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; cursor: pointer; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); }
+        .pop-balloon.popped { visibility: hidden; opacity: 0; }
+        .reasons-container { width: 100%; max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .reason-card { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 10px 12px; border-radius: 12px; text-align: left; font-size: 0.8rem; }
+        .reason-card strong { color: #ffd700; display: block; margin-bottom: 2px; font-size: 0.7rem; }
+        
+        .polaroid-card { background: #fff; padding: 10px 10px 20px 10px; border-radius: 6px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 210px; color: #333; transform: rotate(-1deg); margin: 10px 0; }
+        .polaroid-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 4px; }
+        .polaroid-card p { font-family: 'Dancing Script', cursive; font-size: 1.3rem; margin-top: 8px; color: #222; }
+        
+        .envelope-box { width: 200px; height: 130px; background: #d4a373; position: relative; border-radius: 0 0 10px 10px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 20px 0; }
+        .letter-modal { background: #fffdfa; color: #2c2c2c; padding: 20px; border-radius: 12px; text-align: left; font-size: 0.82rem; line-height: 1.5; max-height: 340px; overflow-y: auto; }
+        .cat-avatar { font-size: 70px; margin: 10px 0; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    </style>
+</head>
+<body>
+      <audio id="birthdayMusic" loop preload="auto">
+        <source src="birthday.mp3" type="audio/mpeg">
+      </audio>
+    <div class="app-container">
+        <div id="particles"></div>
+
+        <!-- SCREEN 1 -->
+        <div class="screen active" id="s1">
+            <span class="sub-text" style="letter-spacing: 2px;">A SURPRISE FOR</span>
+            <h1 style="font-family: 'Dancing Script'; font-size: 2.8rem; color: #ffd700; margin-top: 5px;">Neha</h1>
+            <p class="sub-text">Piddi made this — just for you.</p>
+            <div class="gift-icon" onclick="nextScreen(2)">🎁</div>
+            <button class="btn-action" onclick="nextScreen(2)">Unwrap it 🎁</button>
+            <p class="sub-text" style="font-size: 0.75rem; margin-top: 10px;">🔊 Sound on for the full magic</p>
+        </div>
+
+        <!-- SCREEN 2 -->
+        <div class="screen" id="s2">
+            <p class="sub-text">a little something, for you</p>
+            <div class="big-heart" onclick="nextScreen(3)">💗</div>
+            <p style="font-size: 0.85rem; letter-spacing: 2px; color: #ff80ab; font-weight: 600;">TAP THE HEART ❤️</p>
+        </div>
+
+        <!-- SCREEN 3 -->
+        <div class="screen" id="s3">
+            <div class="pink-banner">
+                <p style="font-size: 0.9rem; color: #ffcdd2; margin-bottom: 5px;">make a wish...</p>
+                <h1 style="font-size: 2.2rem; font-weight: 700;">Happy Birthday</h1>
+                <p style="font-size: 0.95rem; color: #ffe0b2; margin-top: 15px;">to someone worth celebrating</p>
+            </div>
+            <button class="btn-action" onclick="nextScreen(4)">Continue ✨</button>
+        </div>
+
+        <!-- SCREEN 4 (TULIP FLOWER) -->
+        <div class="screen" id="s4">
+            <p class="sub-text">it's officially your day</p>
+            <h2 style="font-size: 1.4rem; color: #ff80ab; margin-top: 4px;">Happy Birthday, Neha</h2>
+            <p class="sub-text" style="margin-bottom: 5px;">And just like that, you're turning 19 ⭐</p>
+            
+            <div class="tulip-wrapper">
+                <div class="tulip-flower">🌷</div>
+            </div>
+
+            <button class="btn-action" onclick="nextScreen(5)">Tap to continue ✨</button>
+        </div>
+
+        <!-- SCREEN 5 (CAKE) -->
+        <div class="screen" id="s5">
+            <h2 style="font-size: 1.3rem; color: #ff80ab;">First things first 🎂</h2>
+            <div class="cake-wrapper">
+                <div class="candle"><div class="flame"></div></div>
+                <div class="cake-layer top"></div>
+                <div class="cake-layer middle"></div>
+                <div class="cake-layer"></div>
+            </div>
+            <p style="color: #ffd700; font-size: 1.1rem; font-weight: 600; margin-bottom: 5px;">Baking something sweet...</p>
+            <p class="sub-text">Happy Birthday, Suu!</p>
+            <button class="btn-action" onclick="nextScreen(6)">Make a wish 🕯️</button>
+        </div>
+
+        <!-- SCREEN 6 -->
+        <div class="screen" id="s6">
+            <h2 style="font-size: 1.2rem; color: #ff80ab;">Pop the balloons 🎈</h2>
+            <p class="sub-text" style="margin-bottom: 12px;">5 balloons. Each holds a little something I appreciate about you. 🤍.</p>
+            <div class="balloons-flex">
+                <div class="pop-balloon" style="background: #ff4081;" onclick="popBalloon(this, 1)"></div>
+                <div class="pop-balloon" style="background: #ab47bc;" onclick="popBalloon(this, 2)"></div>
+                <div class="pop-balloon" style="background: #42a5f5;" onclick="popBalloon(this, 3)"></div>
+                <div class="pop-balloon" style="background: #26a69a;" onclick="popBalloon(this, 4)"></div>
+                <div class="pop-balloon" style="background: #ffa726;" onclick="popBalloon(this, 5)"></div>
+            </div>
+            <div class="reasons-container" id="reasonsBox"></div>
+            <button class="btn-action" id="btnAfterBalloons" style="display: none; margin-top: 10px;" onclick="nextScreen(7)">Keep going 💕</button>
+        </div>
+
+        <!-- SCREEN 7 -->
+        <div class="screen" id="s7">
+            <h2 style="font-size: 1.2rem; color: #ff80ab;">A walk down memory lane 📸</h2>
+            <div class="polaroid-card">
+                <img id="polaroidImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="Memory">
+                <p id="polaroidCaption">My favourite girl 💖</p>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-action" style="padding: 6px 16px;" onclick="prevPhoto()">⬅️ Prev</button>
+                <button class="btn-action" style="padding: 6px 16px;" onclick="nextPhoto()">Next ➡️</button>
+            </div>
+            <button class="btn-action" style="margin-top: 10px;" onclick="nextScreen(8)">Keep going ✨</button>
+        </div>
+
+        <!-- SCREEN 8 -->
+        <div class="screen" id="s8">
+            <div id="envelopeView">
+                <p class="sub-text">One last thing, Neha...</p>
+                <p style="font-size: 0.85rem; color: #ffd700; margin-top: 5px;">Ankesh wrote you a letter.</p>
+                <div class="envelope-box" onclick="openLetter()">💌</div>
+                <p class="sub-text">Tap to open your letter</p>
+            </div>
+            <div id="letterView" style="display: none;">
+                <div class="letter-modal">
+                    <h3 style="font-family: 'Dancing Script'; font-size: 1.5rem; color: #c2185b; margin-bottom: 8px;">Dear Neha,</h3>
+                    <p>Words will never be enough to describe how amazing you are. You're truly one of a kind, Suu. 🤍✨.</p>
+                    <p style="margin-top: 8px;">Happy Birthday, Neha! ❤️🎂
+
+I hope this year brings you all the happiness, love and beautiful moments you truly deserve. Never stop being the amazing person you are. Keep smiling, keep shining and always believe in yourself.
+
+You deserve all the good things life has to offer. I'm genuinely glad I got to know someone like you. No matter how much things change, I'll always wish the best for you.
+
+Have the most beautiful birthday! Lots of happiness and love. 💗✨...</p>
+                    <p style="margin-top: 12px; text-align: right; font-weight: 600; color: #444;"><br>— Ankesh</p>
+                </div>
+                <button class="btn-action" style="margin-top: 10px;" onclick="nextScreen(9)">Continue ❤️</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 9 -->
+        <div class="screen" id="s9">
+            <h1 style="font-size: 2rem; font-weight: 700; color: #ffffff;">HAPPY<br>BIRTHDAY</h1>
+            <h2 style="font-family: 'Dancing Script'; font-size: 2.3rem; color: #ffd700;">Neha!</h2>
+            <div class="cat-avatar">🐱💐</div>
+            <p class="sub-text" style="color: #ff80ab; font-weight: 600;">Made this just for you — Piddi</p>
+            <button class="btn-action" style="margin-top: 20px;" onclick="location.reload()">Replay Surprise 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 15; i++) {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            p.style.width = Math.random() * 8 + 4 + 'px';
+            p.style.height = p.style.width;
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            particlesContainer.appendChild(p);
+        }
+
+        function nextScreen(screenNum) {
+    const music = document.getElementById("birthdayMusic");
+
+    if (music.paused) {
+        music.play().catch(error => {
+            console.log(error);
+        });
+    }
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('s' + screenNum).classList.add('active');
+    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        }
+            
+      
+
+        const reasonsData = {
+            1: "Your laugh is my favourite sound ✨",
+            2: "You remember the little things I forget 📑",
+            3: "You believed in me when I didn't 🌟",
+            4: "Some memories with you will always bring a smile to my face ✨",
+            5: "You are genuinely one of the best people I've ever known. Believe me, never change. ❤️✨"
+        };
+        let poppedCount = 0;
+
+        function popBalloon(element, id) {
+            if (element.classList.contains('popped')) return;
+            element.classList.add('popped');
+            const card = document.createElement('div');
+            card.classList.add('reason-card');
+            card.innerHTML = `<strong>REASON NO. ${id}</strong> ${reasonsData[id]}`;
+            document.getElementById('reasonsBox').appendChild(card);
+            confetti({ particleCount: 25, spread: 40, origin: { y: 0.6 } });
+            poppedCount++;
+            if (poppedCount >= 3) {
+                document.getElementById('btnAfterBalloons').style.display = 'inline-block';
+            }
+        }
+
+        const photos = [
+            { src: "evil5.jpg", caption: "Happiness Looks Good on You 🌷" },
+            { src: "evil3.jpg", caption: "Stay Happy Always 🌸" },
+            { src: "evil2.png", caption: "Beauty in your eyes ✨" }
+        ];
+        let currentPhotoIdx = 0;
+
+        function nextPhoto() {
+            currentPhotoIdx = (currentPhotoIdx + 1) % photos.length;
+            updatePhoto();
+        }
+
+        function prevPhoto() {
+            currentPhotoIdx = (currentPhotoIdx - 1 + photos.length) % photos.length;
+            updatePhoto();
+        }
+
+        function updatePhoto() {
+            document.getElementById('polaroidImg').src = photos[currentPhotoIdx].src;
+            document.getElementById('polaroidCaption').innerText = photos[currentPhotoIdx].caption;
+        }
+updatePhoto();
+        function openLetter() {
+            document.getElementById('envelopeView').style.display = 'none';
+            document.getElementById('letterView').style.display = 'block';
+            confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
+        }
+    </script>
+</body>
+</html>
